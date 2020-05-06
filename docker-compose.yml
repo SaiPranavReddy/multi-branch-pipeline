@@ -1,0 +1,8 @@
+version: '2'
+
+
+services:
+  capstoneproject:
+    build: . 
+    ports:
+      - '30080:8080'
