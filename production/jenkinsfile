@@ -1,0 +1,34 @@
+node {
+     
+  	stage('Git-Checkout') {
+ 		git branch: 'production', url: 'https://github.com/SaiCharanUppari/multi-branch-pipeline.git'  
+  	}
+
+
+
+	stage('AWS - Production Server Provisioning'){
+	   sh label: 'terraform', script: 'sudo /root/bin/terraform  init'
+	   sh label: 'terraform', script: 'sudo /root/bin/terraform  apply -input=false -auto-approve'
+	   }
+
+	stage('Download package from JFrog') {
+            def server= Artifactory.server 'Artifactory'
+            def downloadSpec = """{
+            "files": [
+            {
+                "pattern": "mavenrepo/capstoneproject-0.0.1-SNAPSHOT.war",
+                "target": "./capstoneproject.war"
+            }
+            ]
+            }"""
+        server.download(downloadSpec)
+    }
+    
+    stage('Deployment into production'){
+ 	 ansiblePlaybook become: true, credentialsId: 'ssh', disableHostKeyChecking: true, inventory: 'inventory', playbook: 'web-playbook.yaml'
+      
+       
+}  
+
+
+}

@@ -1,0 +1,23 @@
+node {
+  stage('Git-Checkout') {
+	git branch: 'test-server', url: '://github.com/SaiCharanUppari/multi-branch-pipeline.git'
+  }
+
+              
+  stage('Download package from JFrog') {
+            def server= Artifactory.server 'Artifactory'
+            def downloadSpec = """{
+            "files": [
+            {
+                "pattern": "mavenrepo/capstoneproject-0.0.1-SNAPSHOT.war",
+                "target": "./capstoneproject.war"
+            }
+            ]
+            }"""
+        server.download(downloadSpec)
+    }
+       
+ stage('Docker-Stage-Deployment') {
+   sh label: '', script: 'docker-compose up -d --build'
+  }
+}
