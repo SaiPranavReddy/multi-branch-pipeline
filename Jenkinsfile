@@ -1,6 +1,6 @@
 node {
   stage('Git-Checkout') {
-   git branch: 'development', url: 'https://github.com/SaiCharanUppari/multi-branch-pipeline.git'
+   git branch: 'development', url: 'https://github.com/SaiPranavReddy/multi-branch-pipeline.git'
   }
 
   stage('Maven-Clean') {
